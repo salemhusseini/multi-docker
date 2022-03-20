@@ -1,0 +1,17 @@
+<div class="container">
+  <div>make some values</div>
+  <label for="newValue">Enter Value</label
+  ><input type="number" [(ngModel)]="formValue" />
+  <button type="button" (click)="postNewValue()">Post</button>
+</div>
+<div *ngIf="returnedValues$ | async as valuseObject; else noValues">
+  <pre>{{ valuseObject.data }}</pre>
+</div>
+
+<ng-template #noValues>No Values gggg Sadly</ng-template>
+
+<div *ngIf="returnedIndexes$ | async as indexesObject; else noIndexes">
+  <pre>{{ indexesObject.data }}</pre>
+</div>
+
+<ng-template #noIndexes>No Values Sadly</ng-template>

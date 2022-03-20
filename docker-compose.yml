@@ -1,0 +1,64 @@
+version: "3"
+services:
+  proxy:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: "./nginx"
+    ports:
+      - "80:80"
+
+  postgres:
+    restart: always
+    image: "postgres:latest"
+    environment:
+      - POSTGRES_PASSWORD=dude_password
+      - POSTGRES_USER=dude
+      - POSTGRES_DB=thebase
+
+  redis:
+    restart: always
+    image: "redis:latest"
+
+  api:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: "./server"
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PGHOST=postgres
+      - PGPORT=5432
+      - PGDATABASE=thebase
+      - PGUSER=dude
+      - PGPASSWORD=dude_password
+
+  # client:
+  #   restart: always
+  #   build:
+  #     dockerfile: Dockerfile.dev
+  #     context: "./client"
+  #   volumes:
+  #     - /app/node_modules
+  #     - ./client:/app
+
+  front:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: "./front"
+    volumes:
+      - /app/node_modules
+      - ./front:/app
+
+  worker:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes:
+      - /app/node_modules
+      - ./worker:/app
