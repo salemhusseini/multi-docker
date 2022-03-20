@@ -9,8 +9,15 @@ script:
   - docker run -e CI=true salemhusseini/react-test npm test -- --coverage
 #- docker run salemhusseini/react-test npm test -- --coverage
 
-# after_success:
-#   - docker build -t salemhusseini/multi-front ./front
-#   - docker build -t salemhusseini/multi-nginx ./nginx
-#   - docker build -t salemhusseini/multi-server ./server
-#   - docker build -t salemhusseini/multi-worker ./worker
+after_success:
+  - docker build -t salemhusseini/multi-front ./front
+  - docker build -t salemhusseini/multi-nginx ./nginx
+  - docker build -t salemhusseini/multi-server ./server
+  - docker build -t salemhusseini/multi-worker ./worker
+# login to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+# PUSH images
+- docker push salemhusseini/multi-front
+- docker push salemhusseini/multi-nginx
+- docker push salemhusseini/multi-server
+- docker push salemhusseini/multi-worker
